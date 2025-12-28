@@ -14,8 +14,10 @@ RECEIVER_EMAIL = os.getenv("RECEIVER_EMAIL")
 def generate_pdf(name, email, date, sig_path):
     pdf = FPDF()
     pdf.add_page()
-    #pdf.add_font('Helvetica','','',uni=False) # fix font error
-    pdf.set_font("Helvetica", size=12)
+    # 加入中文可用字型（Noto Sans CJK）
+    font_path = os.path.join(os.path.dirname(__file__), "fonts", "NotoSansTC-Regular.ttf")
+    pdf.add_font("NotoSans", "", font_path, uni=True)
+    pdf.set_font("NotoSans", size=12)
     pdf.multi_cell(0,8,txt="研究參與同意書 / Consent to Participate in Research Project",align='C')
     pdf.ln(8)
     pdf.multi_cell(0,8,f"姓名: {name}\n電郵: {email}\n日期: {date}\n",align='L')
