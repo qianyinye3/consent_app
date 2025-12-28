@@ -18,10 +18,14 @@ def generate_pdf(name, email, date, sig_path):
     font_path = os.path.join(os.path.dirname(__file__), "fonts", "NotoSansTC-Regular.ttf")
     pdf.add_font("NotoSans", "", font_path, uni=True)
     pdf.set_font("NotoSans", size=12)
-    pdf.multi_cell(0,8,txt="研究參與同意書 / Consent to Participate in Research Project",align='C')
-    pdf.ln(8)
-    pdf.multi_cell(0,8,f"姓名: {name}\n電郵: {email}\n日期: {date}\n",align='L')
-    pdf.ln(5)
+    # 注意：新版 fpdf2 要用 text= 而不是 txt=
+    pdf.multi_cell(0, 8, text="研究參與同意書 / Consent to Participate in Research Project", align='C')
+    pdf.ln(10)
+    pdf.cell(200, 10, text=f"姓名 Name: {name}", ln=True)
+    pdf.cell(200, 10, text=f"信箱 Email: {email}", ln=True)
+    pdf.cell(200, 10, text=f"日期 Date: {date}", ln=True)
+    pdf.ln(10)
+    pdf.image(sig_path, x=10, y=None, w=60)
     pdf.multi_cell(0,8,
     f"""研究項目: 連結點滴：探討風險與保護因素對香港長者孤獨類型與心理健康的影響
 Connecting the Dots: Examining the Impact of Risk and Protective Factors on Loneliness Types and Mental Health in Hong Kong's Elderly
