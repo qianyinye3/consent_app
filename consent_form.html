@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="zh-Hant"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>研究參與同意書 / Consent to Participate in Research Project</title>
+<style>
+  body { font-family:"Microsoft JhengHei",Arial,sans-serif; margin:2rem; background:#f9f9f9; color:#222;}
+  h2,h3{text-align:center;}
+  p{line-height:1.6;}
+  label{display:block;margin-top:1rem;}
+  canvas{border:1px solid #ccc;width:100%;height:200px;background:#fff;}
+  button{margin-top:1rem;padding:0.5rem 1rem;}
+  input[type=text],input[type=email],input[type=date]{width:100%;padding:0.5rem;margin-top:0.3rem;}
+  .section{background:#fff;padding:1.5rem;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+</style>
+</head>
+
+<body>
+  <h2>研究參與同意書</h2>
+  <h3>Consent to Participate in Research Project</h3>
+
+  <div class="section">
+    <p>
+      <b>研究項目：</b><br>
+      連結點滴：探討風險與保護因素對香港長者孤獨類型與心理健康的影響<br>
+      <em>Connecting the Dots: Examining the Impact of Risk and Protective Factors on Loneliness Types and Mental Health in Hong Kong's Elderly</em>
+    </p>
+
+    <p>
+      我，
+      <input type="text" id="inlineName" placeholder="請輸入姓名" style="width:60%;display:inline-block;">
+      ，特此同意參與由 <b>Dr Ngai Sing Bik Cindy</b> 主導之上述研究項目。  
+      我明白，本研究所得資料可用於未來相關研究及發表，但我的個人私隱將被嚴格保密。  
+      研究程序已向我充分解釋，我了解參與此研究的益處及風險。  
+      參與此研究完全自願，我有權在任何時間退出而不會受到任何懲罰。
+    </p>
+
+    <p>
+      I, <input type="text" id="inlineNameEng" placeholder="Please enter your name" style="width:60%;display:inline-block;">, hereby consent to participate in the above‑titled research conducted by <b>Dr Ngai Sing Bik Cindy</b>.  
+      I understand that information obtained from this research may be used in future research and published, but my personal details will remain confidential.  
+      The procedure has been fully explained. I understand the benefits and risks involved. Participation is voluntary, and I may withdraw at any time without penalty.
+    </p>
+
+    <form id="form">
+      <label>電郵：
+        <input type="email" name="email" required="">
+      </label>
+      <label>簽名：</label>
+      <canvas id="signature"></canvas>
+      <button type="button" onclick="clearSig()">清除簽名</button><br>
+      <label>日期：
+        <input type="date" name="date" required="">
+      </label>
+      <button type="submit">提交同意書 Submit</button>
+    </form>
+  </div>
+
+  <script>
+    const inlineName = document.getElementById('inlineName');
+    const inlineNameEng = document.getElementById('inlineNameEng');
+    inlineName.addEventListener('input',()=>{inlineNameEng.value = inlineName.value;});
+    inlineNameEng.addEventListener('input',()=>{inlineName.value = inlineNameEng.value;});
+
+    const canvas = document.getElementById('signature');
+    const ctx = canvas.getContext('2d');
+    let drawing=false;
+    canvas.addEventListener('mousedown',e=>{drawing=true;draw(e);});
+    canvas.addEventListener('mouseup',()=>{drawing=false;ctx.beginPath();});
+    canvas.addEventListener('mousemove',draw);
+    canvas.addEventListener('touchstart',e=>{drawing=true;draw(e.touches[0]);});
+    canvas.addEventListener('touchend',()=>{drawing=false;ctx.beginPath();});
+    canvas.addEventListener('touchmove',e=>{draw(e.touches[0]);e.preventDefault();});
+    function draw(e){
+      if(!drawing)return;
+      const r=canvas.getBoundingClientRect();
+      ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#000';
+      ctx.lineTo(e.clientX-r.left,e.clientY-r.top);
+      ctx.stroke();ctx.beginPath();ctx.moveTo(e.clientX-r.left,e.clientY-r.top);
+    }
+    function clearSig(){ctx.clearRect(0,0,canvas.width,canvas.height);}
+
+    document.getElementById('form').addEventListener('submit',async e=>{
+      e.preventDefault();
+      const name = inlineName.value || inlineNameEng.value;
+      const dataURL=canvas.toDataURL('image/png');
+      const formData={
+        name:name,
+        email:e.target.email.value,
+        date:e.target.date.value,
+        signature:dataURL
+      };
+      alert('✅ 感謝您提交！Thank you for your consent!');
+      await fetch("/submit",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(formData)
+      });
+    });
+  </script>
+
+
+</body></html>
