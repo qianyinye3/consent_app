@@ -14,7 +14,7 @@ RECEIVER_EMAIL = os.getenv("RECEIVER_EMAIL")
 def generate_pdf(name, email, date, sig_path):
     pdf = FPDF()
     pdf.add_page()
-    pdf.add_font('Helvetica','','',uni=False)
+    #pdf.add_font('Helvetica','','',uni=False)
     pdf.set_font("Helvetica", size=12)
     pdf.multi_cell(0,8,txt="研究參與同意書 / Consent to Participate in Research Project",align='C')
     pdf.ln(8)
